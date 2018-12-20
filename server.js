@@ -31,9 +31,15 @@ const mainHandler = (servingPath, lpHost, lpPort) => (request, response) => {
     const filePath = './' + servingPath +  (request.url === '/'? '/index.html' : request.url);
     const ext = path.extname(filePath).slice(1);
     const contentType = getContentType(ext);
-    
-    fs.readFile(filePath, (error, content) => {
-        if (error) {
+    response.writeHead(200, { 'Content-Type': contentType });
+
+    const readStream = fs.createReadStream(filePath);
+    readStream
+        .on('data', data =>  {
+            const str = data.toString('utf-8').replace(/(<\/body>)/, inject(lpHost, lpPort) + '$1')
+            response.write(str)
+        })
+        .on('error', error => {
             if(error.code == 'ENOENT'){
                 response.writeHead(404);
                 response.end('404', 'utf-8');
@@ -44,20 +50,11 @@ const mainHandler = (servingPath, lpHost, lpPort) => (request, response) => {
                 response.end('500'); 
                 log(request, 500, COLOR_RED);
             }
-        }
-        else {
-            response.writeHead(200, { 'Content-Type': contentType });
-            if (request.url === '/') {
-                let html = content.toString('utf8');
-                const head = '</head>';
-                const headIndex = html.indexOf(head);
-                html = html.slice(0, headIndex) + inject(lpHost, lpPort) + html.slice(headIndex)
-                content = new Buffer(html);
-            }
-            response.end(content, 'utf-8');
+        })
+        .on('end', () => {
+            response.end();
             log(request, 200, COLOR_GREEN);
-        }
-    })
+        })
 }
 
 const longPollingHandler = (servingPath) => (request, response) => {
