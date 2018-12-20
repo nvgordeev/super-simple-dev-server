@@ -64,7 +64,7 @@ const longPollingHandler = (servingPath) => (request, response) => {
         response.end('heartbeat', 'utf-8');
     }, 100000)
 
-    const watcher = fs.watch(servingPath, handleChange)
+    const watcher = fs.watch(servingPath, {recursive: true}, handleChange)
 
     function handleChange(evt, filename) {
         console.log(`${filename} changed, reloading....`);
