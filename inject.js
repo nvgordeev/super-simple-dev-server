@@ -1,5 +1,4 @@
-module.exports =  (lpHost, lpPort) => {
-    return `
+module.exports = (lpHost, lpPort) => `
         <!-- SDS script injection start-->
         <script>
             const HEARTBEAT = 'heartbeat';
@@ -23,4 +22,4 @@ module.exports =  (lpHost, lpPort) => {
         </script>
         <!-- SDS script injection end -->
     `
-}
+;
