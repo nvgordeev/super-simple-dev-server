@@ -1,5 +1,5 @@
 {
-  "name": "super_simple_dev_server",
+  "name": "ssds",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
@@ -8,5 +8,6 @@
     "start": "node server.js"
   },
   "author": "Nikolay Gordeev",
-  "license": "ISC"
+  "license": "ISC",
+  "repository": "nvgordeev/super-simple-dev-server"
 }
